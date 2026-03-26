@@ -50,8 +50,22 @@ const initialTasks: Task[] = [
 ];
 
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [blocks, setBlocks] = useState<Block[]>(generateInitialBlocks());
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const saved = localStorage.getItem('timeblocker_tasks');
+    return saved ? JSON.parse(saved) : initialTasks;
+  });
+  const [blocks, setBlocks] = useState<Block[]>(() => {
+    const saved = localStorage.getItem('timeblocker_blocks');
+    return saved ? JSON.parse(saved) : generateInitialBlocks();
+  });
+
+  useEffect(() => {
+    localStorage.setItem('timeblocker_tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem('timeblocker_blocks', JSON.stringify(blocks));
+  }, [blocks]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskPriority, setNewTaskPriority] = useState<Priority>('media');
 
